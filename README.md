@@ -60,6 +60,43 @@ npx vapush --port=3000 --host=0.0.0.0 --data-dir=/path/to/.vapush
 - `--host` - Bind address (default: 0.0.0.0)
 - `--data-dir` - Data directory for keys and subscriptions (default: ./.vapush)
 
+## Data Storage
+
+All data is stored in the data directory (default `.vapush/`):
+
+```
+.vapush/
+├── secret           # Auth token (auto-generated on first run)
+├── vapid.json       # VAPID keys for push signing
+└── subscriptions.json  # Registered browser subscriptions
+```
+
+### Secret Management
+
+The secret is auto-generated on first run. To regenerate:
+
+```bash
+rm .vapush/secret
+# Restart the server - a new secret will be created
+```
+
+After regenerating, you'll need to re-subscribe on all devices with the new URL.
+
+To set a custom secret:
+
+```bash
+echo 'my-custom-secret' > .vapush/secret
+```
+
+## Design
+
+vapush is intentionally minimal:
+
+- **Single channel** - all subscribers receive all pushes
+- **Single secret** - one token for subscribe and send
+- **No accounts** - whoever has the secret can use it
+- **No topics** - if you need multiple channels, run multiple instances
+
 ## Reverse Proxy (Caddy)
 
 ```
